@@ -11,6 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get( '/', function(){
+    $mapAPI = config( 'setup.map.url' ) . '&key=' . config( 'setup.map.key' );
+    $params = [ 'mapAPI' => $mapAPI, 'placeType' => config( 'setup.map.placeType' ), 'zoom' => (int)config( 'setup.map.zoom' ) ];
+    return view( 'search.map_based', $params );
 });
+
+Route::post( 'twittersearch', 'TwitterController@search' );

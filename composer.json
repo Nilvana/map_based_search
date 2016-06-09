@@ -6,7 +6,10 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.2.*"
+        "laravel/framework": "5.2.*",
+        "twbs/bootstrap": "^3.3",
+        "components/jquery": "^2.2",
+        "j7mbo/twitter-api-php": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

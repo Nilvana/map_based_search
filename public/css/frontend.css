@@ -1,0 +1,9 @@
+.center-box {
+  position: absolute;
+  top: 50% !important;
+  transform: translate( 0, -50% ) !important;
+  -ms-transform: translate( 0, -50% ) !important;
+  -webkit-transform: translate( 0, -50% ) !important;
+  margin: auto 30%;
+  width: 40%;
+}
