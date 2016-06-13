@@ -41,77 +41,63 @@ var searchModule = ( function(){
 
         if( status === google.maps.places.PlacesServiceStatus.OK ){
 
-            var foundType = 0;
+            if( results.length ){
 
-            for( var resultIndex = 0; resultIndex < results.length; resultIndex++ ){
+                var resultIndex = 0,
+                    location    = results[resultIndex].geometry.location,
+                    latitude    = location.lat(),
+                    longitude   = location.lng();
 
-                for( var typeIndex = 0; typeIndex < placeType.length; typeIndex++ ){
-                    if( $.inArray( placeType[typeIndex], results[resultIndex].types ) != -1 ){
-                        foundType = 1;
-                        break;
-                    }
-                }
+                createMarker({
+                    position: location,
+                    content: results[resultIndex].name + '<br>' + results[resultIndex].formatted_address,
+                });
 
-                if( foundType ){
+                $.ajax({
+                    url: '/twittersearch',
+                    method: 'POST',
+                    data: {
+                        _token: _token,
+                        city: city,
+                        latitude: latitude,
+                        longitude: longitude,
+                    },
+                    dataType: 'json',
+                    success: function( data ){
 
-                    var location  = results[resultIndex].geometry.location,
-                        latitude  = location.lat(),
-                        longitude = location.lng();
+                        for( var dataIndex = 0; dataIndex < data.statuses.length; dataIndex++ ){
 
-                    createMarker({
-                        position: location,
-                        content: results[resultIndex].formatted_address,
-                    });
+                            var twitterData = data.statuses[dataIndex],
+                                coordinate  = [];
 
-                    $.ajax({
-                        url: '/twittersearch',
-                        method: 'POST',
-                        data: {
-                            _token: _token,
-                            city: city,
-                            latitude: latitude,
-                            longitude: longitude,
-                        },
-                        dataType: 'json',
-                        success: function( data ){
-
-                            for( var dataIndex = 0; dataIndex < data.statuses.length; dataIndex++ ){
-
-                                var twitterData = data.statuses[dataIndex],
-                                    coordinate  = [];
-
-                                if( twitterData.coordinates ){
-                                    coordinate = twitterData.coordinates.coordinates;
-                                }else if( twitterData.place ){
-                                    coordinate = twitterData.place.bounding_box.coordinates[0][0];
-                                }
-
-                                if( typeof( coordinate ) == 'object' && coordinate.length == 2 ){
-
-                                    var position = new google.maps.LatLng({ lat: coordinate[1], lng: coordinate[0] });
-
-                                    createMarker({
-                                        icon: twitterData.user.profile_image_url,
-                                        content: twitterData.text,
-                                        position: position,
-                                    });
-                                }
+                            if( twitterData.coordinates ){
+                                coordinate = twitterData.coordinates.coordinates;
+                            }else if( twitterData.place ){
+                                coordinate = twitterData.place.bounding_box.coordinates[0][0];
                             }
-                        },
-                        error: function( jqXHR, textStatus, errorThown ){
-                            $('#error-message').html( 'Error! Failed to get data from Twitter.' );
-                            $('#error').modal( 'show' );
-                        },
-                        complete: function(){
-                            map.setCenter( location );
-                            mapBasedSearchForm.find( ':input' ).attr( 'disabled', false );
-                        }
-                    });
-                    break;
-                }
-            }
 
-            if( !foundType ){
+                            if( typeof( coordinate ) == 'object' && coordinate.length == 2 ){
+
+                                var position = new google.maps.LatLng({ lat: coordinate[1], lng: coordinate[0] });
+
+                                createMarker({
+                                    icon: twitterData.user.profile_image_url,
+                                    content: twitterData.text,
+                                    position: position,
+                                });
+                            }
+                        }
+                    },
+                    error: function( jqXHR, textStatus, errorThown ){
+                        $('#error-message').html( 'Error! Failed to get data from Twitter.' );
+                        $('#error').modal( 'show' );
+                    },
+                    complete: function(){
+                        map.setCenter( location );
+                        mapBasedSearchForm.find( ':input' ).attr( 'disabled', false );
+                    }
+                });
+            }else{
                 $('#map').html( strNotFound );
                 mapBasedSearchForm.find( ':input' ).attr( 'disabled', false );
             }
