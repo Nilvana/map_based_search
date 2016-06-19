@@ -10,7 +10,7 @@
             <div class="row">
                 <div id="map" class="map">
                     <h2 class="center-box welcome-text">
-                        Type your city name into <b>'City name'</b> box to find your city location.
+                        Type your place name into <b>'Place name'</b> box to find your place.
                     </h2>
                 </div>
             </div>
@@ -20,7 +20,7 @@
                     <input type="hidden" name="placeType" value="{{ $placeType }}">
                     <input type="hidden" name="zoom" value="{{ $zoom }}">
                     <div class="input-group">
-                        <input name="city" type="text" class="form-control" placeholder="City name">
+                        <input name="place" type="text" class="form-control" placeholder="Place name">
                         <span class="input-group-btn">
                             <button class="btn btn-info" type="submit">SEARCH</button>
                         </span>

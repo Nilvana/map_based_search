@@ -8,7 +8,7 @@ var searchModule = ( function(){
 
     /** @private */
     var keyCode = { ENTER: 13 },
-        city, placeType, zoom, _token, mapBasedSearchForm, map, infoWindow;
+        place, placeType, zoom, _token, mapBasedSearchForm, map, infoWindow;
 
    /**
     * @summary  Initialize a map.
@@ -22,7 +22,7 @@ var searchModule = ( function(){
         infoWindow  = new google.maps.InfoWindow();
         var service = new google.maps.places.PlacesService( map );
 
-        service.textSearch( { query: city }, mapBasedSearchCallback );
+        service.textSearch( { query: place }, mapBasedSearchCallback );
     }
 
     /**
@@ -37,7 +37,7 @@ var searchModule = ( function(){
     */
     function mapBasedSearchCallback( results, status ){
 
-        var strNotFound = '<h2 class="not-found-result center-box">Not found your city name.</h2>';
+        var strNotFound = '<h2 class="not-found-result center-box">Not found your place name.</h2>';
 
         if( status === google.maps.places.PlacesServiceStatus.OK ){
 
@@ -58,7 +58,7 @@ var searchModule = ( function(){
                     method: 'POST',
                     data: {
                         _token: _token,
-                        city: city,
+                        place: place,
                         latitude: latitude,
                         longitude: longitude,
                     },
@@ -159,16 +159,16 @@ var searchModule = ( function(){
 
             $(this).find( ':input' ).attr( 'disabled', true );
 
-            var cityInput = $(this).find( '[name=city]' );
-            city          = $.trim( cityInput.val() );
+            var placeInput = $(this).find( '[name=place]' );
+            place          = $.trim( placeInput.val() );
             placeType     = $(this).find( '[name=placeType]' ).val().split( /, ?/ );
             zoom          = parseInt( $(this).find( '[name=zoom]' ).val() );
             _token        = $(this).find( '[name=_token]' ).val();
 
-            if( city ){
+            if( place ){
                 initializeMap();
             }else{
-                $('#error-message').html( 'Please input your city name.' );
+                $('#error-message').html( 'Please input your place name.' );
                 $('#error').modal( 'show' );
                 $(this).find( ':input' ).attr( 'disabled', false );
             }

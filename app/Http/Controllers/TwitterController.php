@@ -12,16 +12,16 @@ use Cache;
 class TwitterController extends Controller {
 
    /**
-    * Search people who tweet about your city name input and stay near that city.
+    * Search people who tweet about your place name input and stay near that place.
     *
     * @param  Request  $request
     * @return Response Twitter search response
     */
     public function search( Request $request ){
 
-        $city    = urlencode( str_limit( $request->input( 'city' ), 500 ) );
+        $place    = urlencode( str_limit( $request->input( 'place' ), 500 ) );
         $geocode = $request->input( 'latitude' ) . ',' . $request->input( 'longitude' ) . ',' . config( 'setup.twitter.radius' );
-        $query   = '?q=' . $city . '&geocode=' . $geocode . '&result_type=' . config( 'setup.twitter.resultType' );
+        $query   = '?q=' . $place . '&geocode=' . $geocode . '&result_type=' . config( 'setup.twitter.resultType' );
         $key     = str_slug( $query, '_' );
         $response;
 
