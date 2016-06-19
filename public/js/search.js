@@ -65,26 +65,31 @@ var searchModule = ( function(){
                     dataType: 'json',
                     success: function( data ){
 
-                        for( var dataIndex = 0; dataIndex < data.statuses.length; dataIndex++ ){
+                        if( data.errors ){
+                            $('#error-message').html( 'Twitter API error!' );
+                            $('#error').modal( 'show' );
+                        }else{
+                            for( var dataIndex = 0; dataIndex < data.statuses.length; dataIndex++ ){
 
-                            var twitterData = data.statuses[dataIndex],
-                                coordinate  = [];
+                                var twitterData = data.statuses[dataIndex],
+                                    coordinate  = [];
 
-                            if( twitterData.coordinates ){
-                                coordinate = twitterData.coordinates.coordinates;
-                            }else if( twitterData.place ){
-                                coordinate = twitterData.place.bounding_box.coordinates[0][0];
-                            }
+                                if( twitterData.coordinates ){
+                                    coordinate = twitterData.coordinates.coordinates;
+                                }else if( twitterData.place ){
+                                    coordinate = twitterData.place.bounding_box.coordinates[0][0];
+                                }
 
-                            if( typeof( coordinate ) == 'object' && coordinate.length == 2 ){
+                                if( typeof( coordinate ) == 'object' && coordinate.length == 2 ){
 
-                                var position = new google.maps.LatLng({ lat: coordinate[1], lng: coordinate[0] });
+                                    var position = new google.maps.LatLng({ lat: coordinate[1], lng: coordinate[0] });
 
-                                createMarker({
-                                    icon: twitterData.user.profile_image_url,
-                                    content: twitterData.text,
-                                    position: position,
-                                });
+                                    createMarker({
+                                        icon: twitterData.user.profile_image_url,
+                                        content: twitterData.text,
+                                        position: position,
+                                    });
+                                }
                             }
                         }
                     },
